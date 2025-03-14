@@ -2,6 +2,7 @@
 
 RAYLIB_PATH        ?= ../deps/raylib
 RAYGUI_PATH        ?= ../deps/raygui
+FLUIDSYNTH_PATH    ?= ../deps/fluidsynth/build
 
 export PLATFORM    ?= PLATFORM_DESKTOP
 
@@ -85,6 +86,12 @@ endif
 # Define library paths containing required libs.
 LDFLAGS = -L. -L$(RAYLIB_PATH)/src
 
+ifeq ($(PLATFORM_OS),OSX)
+    LDFLAGS += -F$(FLUIDSYNTH_PATH)/src -rpath $(FLUIDSYNTH_PATH)/src
+else
+    LDFLAGS += -L$(FLUIDSYNTH_PATH)/src
+endif
+
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),BSD)
         # Consider -L$(RAYLIB_INSTALL_PATH)
@@ -105,14 +112,14 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),WINDOWS)
         # Libraries for Windows desktop compilation
         # NOTE: WinMM library required to set high-res timer resolution
-        LDLIBS = -lraylib -lopengl32 -lgdi32 -lwinmm
+        LDLIBS = -lraylib lfluidsynth -lopengl32 -lgdi32 -lwinmm
         # Required for physac examples
         LDLIBS += -static -lpthread
     endif
     ifeq ($(PLATFORM_OS),LINUX)
         # Libraries for Debian GNU/Linux desktop compiling
         # NOTE: Required packages: libegl1-mesa-dev
-        LDLIBS = -lraylib -lGL -lm -lpthread -ldl -lrt
+        LDLIBS = -lraylib -lfluidsynth -lGL -lm -lpthread -ldl -lrt
 
         # On X11 requires also below libraries
         LDLIBS += -lX11
@@ -131,7 +138,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),OSX)
         # Libraries for OSX 10.9 desktop compiling
         # NOTE: Required packages: libopenal-dev libegl1-mesa-dev
-        LDLIBS = -lraylib -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
+        LDLIBS = -lraylib -framework FluidSynth -framework OpenGL -framework Cocoa -framework IOKit -framework CoreAudio -framework CoreVideo
     endif
     ifeq ($(PLATFORM_OS),BSD)
         # Libraries for FreeBSD, OpenBSD, NetBSD, DragonFly desktop compiling
@@ -149,7 +156,7 @@ endif
 ifeq ($(PLATFORM),PLATFORM_RPI)
     # Libraries for Raspberry Pi compiling
     # NOTE: Required packages: libasound2-dev (ALSA)
-    LDLIBS = -lraylib -lGLESv2 -lEGL -lpthread -lrt -lm -ldrm -lgbm -ldl
+    LDLIBS = -lraylib -lfluidsynth -lGLESv2 -lEGL -lpthread -lrt -lm -ldrm -lgbm -ldl
 endif
 
 
