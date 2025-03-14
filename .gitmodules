@@ -4,3 +4,6 @@
 [submodule "deps/raylib"]
 	path = deps/raylib
 	url = https://github.com/raysan5/raylib
+[submodule "deps/fluidsynth"]
+	path = deps/fluidsynth
+	url = https://github.com/FluidSynth/fluidsynth
