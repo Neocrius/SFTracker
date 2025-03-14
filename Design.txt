@@ -1,0 +1,40 @@
+SoundFont-based tracker built around FluidSynth optimized for small screens (uConsole)
+C++
+raygui
+raylib
+
+Pattern format
+	For each channel
+		1 to N Note columns (3 characters each, i.e. C#4, or BD and such for drums)
+		Instrument (2-digit hex number)
+		Velocity (2-digit hex number, 0 to 7F)
+		0 to N FX columns, each with a 4-digit hex number
+
+Effects
+	Velocity column
+	FX column
+
+	see tutka
+
+Required Icons (16x16, 1-bit)			Default?
+	New Song								*
+	Open Song								*
+	Save									*
+	Export MIDI
+	Render Audio
+	Play 									*
+	Loop Pattern							*
+	Stop									*
+	Record?									*
+	Follow Playback in Editor
+	FX Help									*
+	Song Properties
+	SoundFont/Instrument Properties
+	Tools
+	Settings								*
+-----
+	Stay within pattern
+	Undo 									*
+	Duplicate								*
+	Delete									*
+	
