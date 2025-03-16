@@ -8,7 +8,7 @@ cd SFTracker
 git submodule init
 git submodule update
 cd deps/raylib/src
-make PLATFORM=PLATFORM_DRM
+make PLATFORM=PLATFORM_DESKTOP GRAPHICS=GRAPHICS_API_OPENGL_ES2
 cd ../../fluidsynth
 cmake -DCMAKE_BUILD_TYPE=Release -S . -B ./build
 cmake --build ./build
