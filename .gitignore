@@ -1,3 +1,4 @@
 ref/
 src/*.o
 src/sftracker
+.DS_Store
