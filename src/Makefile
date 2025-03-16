@@ -43,11 +43,11 @@ CC = g++
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),OSX)
         # OSX default compiler
-        CC = clang
+        CC = clang++
     endif
     ifeq ($(PLATFORM_OS),BSD)
         # FreeBSD, OpenBSD, NetBSD, DragonFly default compiler
-        CC = clang
+        CC = clang++
     endif
 endif
 ifeq ($(PLATFORM),PLATFORM_RPI)
@@ -84,7 +84,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
 endif
 
 # Define library paths containing required libs.
-LDFLAGS = -L. -L$(RAYLIB_PATH)/src
+LDFLAGS = -std=c++11 -L. -L$(RAYLIB_PATH)/src
 
 ifeq ($(PLATFORM_OS),OSX)
     LDFLAGS += -F$(FLUIDSYNTH_PATH)/src -rpath $(FLUIDSYNTH_PATH)/src
