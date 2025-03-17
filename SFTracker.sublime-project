@@ -1,0 +1,26 @@
+{
+	"folders":
+	[
+		{
+			"name": "Src",
+			"path": "src",
+			"file_exclude_patterns": ["*.o", "sftracker"]
+		},
+		{
+			"name": "RayGui",
+			"path": "deps/raygui/src",
+		},
+	],
+	"build_systems":
+	[
+		{
+			"name": "Make",
+			"cmd": "make",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+		},
+		{
+			"name": "Run",
+			"cmd": "./sftracker"
+		}		
+	]
+}
