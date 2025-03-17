@@ -45,6 +45,26 @@ void DrawSongPanel(Rectangle bounds)
         bool checked = true;
         GuiCheckBox((Rectangle){bounds.x + 8 + track * TRACK_CHECK_W, trackMaskY + 8, 16, 16}, trackS.c_str(), &checked);
     }
+
+    int bpm = 96;
+    GuiSpinner((Rectangle){bounds.x + PATTERN_ORDER_W + 32, bounds.y + 8, 80, 24}, "BPM ", &bpm, 1, 255, false);
+
+    int lpb = 4;
+    GuiSpinner((Rectangle){bounds.x + PATTERN_ORDER_W + 184, bounds.y + 8, 72, 24}, "Lines/Beat ", &lpb, 1, 16, false);
+
+    int tpl = 6;
+    GuiSpinner((Rectangle){bounds.x + PATTERN_ORDER_W + 184, bounds.y + 40, 72, 24}, "Ticks/Line ", &tpl, 1, 16, false);
+
+    int octave = 4;
+    GuiSpinner((Rectangle){bounds.x + PATTERN_ORDER_W + 184, bounds.y + 80, 72, 24}, "Kbd Octave ", &octave, 0, 7, false);
+
+    int velocity = 100;
+    GuiSpinner((Rectangle){bounds.x + PATTERN_ORDER_W + 32, bounds.y + 80, 80, 24}, "Vel. ", &velocity, 1, 127, false);
+}
+
+void DrawInstrumentList(Rectangle bounds)
+{
+    GuiGroupBox(bounds, "Instruments");
 }
 
 int main()
@@ -64,7 +84,7 @@ int main()
         screenWidth     = GetScreenWidth();
         screenHeight    = GetScreenHeight();
 
-        int instListW   = screenWidth - TOP_PANEL_W;
+        int instListW   = screenWidth - TOP_PANEL_W - 24;
 
         BeginDrawing();
             ClearBackground(GetColor( GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
@@ -100,7 +120,6 @@ int main()
             //Transport
 #define TRANSPORT_X (TOP_PANEL_W / 2 + 8 - (TOOL_BUTTON_WIDTH * 5 + 8 * 4) / 2)
 
-            GuiSetTooltip("Play");
             if (GuiButton((Rectangle){ TRANSPORT_X, 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
                 GuiIconText(ICON_PLAYER_PLAY, "")))
             {
@@ -143,11 +162,13 @@ int main()
                 GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
                 GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));                
 
+            GuiSetState(STATE_PRESSED);
             if (GuiButton((Rectangle){ float(tabsLeft + 8), 16, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
                 GuiIconText(ICON_FILETYPE_AUDIO, "")))
             {
                 //Switch to Song Properties
             }
+            GuiSetState(STATE_NORMAL);
             if (GuiButton((Rectangle){ float(tabsLeft + 8 + TOOL_BUTTON_WIDTH + 8), 16, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
                 GuiIconText(ICON_FILETYPE_AUDIO, "")))
             {
@@ -169,7 +190,9 @@ int main()
                 //Switch to FX Help
             }
 
-            DrawSongPanel((Rectangle){16, TOP_PANEL_Y + 8, float(TOP_PANEL_W - 16), TOP_PANEL_H - 16});
+            DrawSongPanel((Rectangle){16, TOP_PANEL_Y + 8, TOP_PANEL_W - 16, TOP_PANEL_H - 16});
+
+            DrawInstrumentList((Rectangle){TOP_PANEL_W + 16, 8, float(instListW), TOP_PANEL_H + TOP_PANEL_Y - 8});
 
         EndDrawing();
     }
