@@ -9,7 +9,7 @@
 #include <string>
 
 #define TOOLBAR_HEIGHT      32
-#define TOOL_BUTTON_WIDTH   32
+#define TOOL_BUTTON_S   32
 #define TOP_PANEL_Y         (8 + TOOLBAR_HEIGHT + 8)
 #define TOP_PANEL_H         128
 #define TOP_PANEL_W         800
@@ -132,6 +132,36 @@ void DrawInstrumentList(Rectangle bounds)
     GuiGroupBox(bounds, "Instruments");
 }
 
+void DrawTabbedArea(Rectangle bounds, int tabButtons, const int* tabIcons, int* currentTab)
+{
+    const float tabsWidth   = tabButtons * (TOOL_BUTTON_S + 8) + 8;
+    const float tabsLeft    = bounds.x + bounds.width - tabsWidth;
+
+    GuiDrawRectangle((Rectangle){tabsLeft, bounds.y, tabsWidth, TOOLBAR_HEIGHT + 8}, RAYGUI_PANEL_BORDER_WIDTH,
+        GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+        GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));                
+    GuiDrawRectangle((Rectangle){bounds.x, bounds.y + TOOL_BUTTON_S + 8, bounds.width, bounds.height - TOOL_BUTTON_S - 8}, RAYGUI_PANEL_BORDER_WIDTH,
+        GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+        GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));                
+    GuiDrawRectangle((Rectangle){float(tabsLeft) + RAYGUI_PANEL_BORDER_WIDTH,
+                                 bounds.y + RAYGUI_PANEL_BORDER_WIDTH,
+                                 tabsWidth - 2 * RAYGUI_PANEL_BORDER_WIDTH,
+                                 TOOL_BUTTON_S + 8 + RAYGUI_PANEL_BORDER_WIDTH}, 0,
+        GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+        GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));
+
+    for (int tab = 0; tab < tabButtons; ++tab)
+    {
+        if (tab == *currentTab) GuiSetState(STATE_PRESSED);
+        if (GuiButton((Rectangle){ tabsLeft + 8 + tab * (TOOL_BUTTON_S + 8), bounds.y + 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+            GuiIconText(tabIcons[tab], "")))
+        {
+            *currentTab = tab;
+        }
+        GuiSetState(STATE_NORMAL);
+    }
+}
+
 int main()
 {
     int screenWidth = 1280;
@@ -144,6 +174,9 @@ int main()
 
     GuiLoadStyleDefault();
 
+    int currentTab = 0;
+    int patternTab = 0;
+
     while (!WindowShouldClose())
     {
         screenWidth     = GetScreenWidth();
@@ -153,93 +186,29 @@ int main()
 
         BeginDrawing();
             ClearBackground(GetColor( GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-            
-            //File Operations
 
-            if (GuiButton((Rectangle){ 8, 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_FILE_NEW, "")))
-            {
-                //New
-            }
-            if (GuiButton((Rectangle){ 8 + TOOL_BUTTON_WIDTH + 8, 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_FILE_OPEN, "")))
-            {
-                //Open
-            }
-            if (GuiButton((Rectangle){ 8 + 2 * (TOOL_BUTTON_WIDTH + 8), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_FILE_SAVE_CLASSIC, "")))
-            {
-                //Save (as)
-            }
-            if (GuiButton((Rectangle){ 8 + 3 * (TOOL_BUTTON_WIDTH + 8), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_FILE_EXPORT, "")))
-            {
-                //Export MIDI
-            }
-            if (GuiButton((Rectangle){ 8 + 4 * (TOOL_BUTTON_WIDTH + 8), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_WAVE, "")))
-            {
-                //Render Audio
-            }
+            //Pattern Editor
 
-            //Transport
-#define TRANSPORT_X (TOP_PANEL_W / 2 + 8 - (TOOL_BUTTON_WIDTH * 5 + 8 * 4) / 2)
+            Rectangle editorBounds = { 8, 8 + TOP_PANEL_Y + TOP_PANEL_H, float(screenWidth - 16), float(screenHeight - TOP_PANEL_Y - TOP_PANEL_H - 16) };
 
-            if (GuiButton((Rectangle){ TRANSPORT_X, 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_PLAYER_PLAY, "")))
-            {
-                //Play
-            }
-            if (GuiButton((Rectangle){ float(TRANSPORT_X + TOOL_BUTTON_WIDTH + 8), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_REPEAT, "")))
-            {
-                //Loop Pattern Toggle
-            }
-            if (GuiButton((Rectangle){ float(TRANSPORT_X + 2 * (TOOL_BUTTON_WIDTH + 8)), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_PLAYER_STOP, "")))
-            {
-                //Stop
-            }
-            if (GuiButton((Rectangle){ float(TRANSPORT_X + 3 * (TOOL_BUTTON_WIDTH + 8)), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_PLAYER_RECORD, "")))
-            {
-                //Record/Edit Toggle
-            }
-            if (GuiButton((Rectangle){ float(TRANSPORT_X + 4 * (TOOL_BUTTON_WIDTH + 8)), 8, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                GuiIconText(ICON_MAGNET, "")))
-            {
-                //Follow Playback Toggle
-            }
+            const int patternIcons[] = {ICON_FILETYPE_AUDIO, ICON_TOOLS};
+            DrawTabbedArea(editorBounds, 2, patternIcons, &patternTab);
 
-#define TABS_WIDTH  (TOOL_BUTTON_WIDTH * 5 + 8 * 6)
-            int tabsLeft = 8 + TOP_PANEL_W - TABS_WIDTH;
+            //Pattern Editor Controls
 
-            GuiDrawRectangle((Rectangle){float(tabsLeft), 8, TABS_WIDTH, TOOLBAR_HEIGHT + 8}, RAYGUI_PANEL_BORDER_WIDTH,
-                GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
-                GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));                
-            GuiDrawRectangle((Rectangle){8, TOP_PANEL_Y, float(TOP_PANEL_W), TOP_PANEL_H}, RAYGUI_PANEL_BORDER_WIDTH,
-                GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
-                GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));                
-            GuiDrawRectangle((Rectangle){float(tabsLeft) + RAYGUI_PANEL_BORDER_WIDTH,
-                                         8 + RAYGUI_PANEL_BORDER_WIDTH,
-                                         TABS_WIDTH - 2 * RAYGUI_PANEL_BORDER_WIDTH,
-                                         TOOLBAR_HEIGHT + 8 + RAYGUI_PANEL_BORDER_WIDTH}, 0,
-                GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
-                GetColor(GuiGetStyle(DEFAULT, (int)BACKGROUND_COLOR)));                
+            int currentPattern = 1;
+            GuiSpinner((Rectangle){8 + 48, editorBounds.y + 8, 80, 24}, "Pattern ", &currentPattern, 1, 256, false);
 
-            static int currentTab = 0;
-            const int icons[] = {ICON_FILETYPE_AUDIO, ICON_FILETYPE_AUDIO, ICON_TOOLS, ICON_GEAR_BIG, ICON_FX};
+            int patternLength = 64;
+            GuiSpinner((Rectangle){8 + 48 + 80 + 48, editorBounds.y + 8, 80, 24}, "Length ", &patternLength, 1, 256, false);
 
-            for (int tab = 0; tab < 5; ++tab)
-            {
-                if (tab == currentTab) GuiSetState(STATE_PRESSED);
-                if (GuiButton((Rectangle){ float(tabsLeft + 8 + tab * (TOOL_BUTTON_WIDTH + 8)), 16, TOOL_BUTTON_WIDTH, TOOLBAR_HEIGHT },
-                    GuiIconText(icons[tab], "")))
-                {
-                    currentTab = tab;
-                }
-                GuiSetState(STATE_NORMAL);
-            }
+            int editingStep = 1;
+            GuiSpinner((Rectangle){8 + 48 + 80 + 48 + 80 + 40, editorBounds.y + 8, 80, 24}, "Step ", &editingStep, 1, 256, false);
+
+            //Top Panel
+
+            const int topIcons[] = {ICON_FILETYPE_AUDIO, ICON_FILETYPE_AUDIO, ICON_TOOLS, ICON_GEAR_BIG, ICON_FX};
+            DrawTabbedArea((Rectangle){ 8, 8, TOP_PANEL_W, TOP_PANEL_H + TOP_PANEL_Y - 8}, 5, topIcons, &currentTab);
 
             Rectangle topPanelBounds = {16, TOP_PANEL_Y + 8, TOP_PANEL_W - 16, TOP_PANEL_H - 16};
 
@@ -256,6 +225,65 @@ int main()
             }
 
             DrawInstrumentList((Rectangle){TOP_PANEL_W + 16, 8, float(instListW), TOP_PANEL_H + TOP_PANEL_Y - 8});
+
+            //Top Buttons
+            
+            //File Operations
+
+            if (GuiButton((Rectangle){ 8, 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_FILE_NEW, "")))
+            {
+                //New
+            }
+            if (GuiButton((Rectangle){ 8 + TOOL_BUTTON_S + 8, 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_FILE_OPEN, "")))
+            {
+                //Open
+            }
+            if (GuiButton((Rectangle){ 8 + 2 * (TOOL_BUTTON_S + 8), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_FILE_SAVE_CLASSIC, "")))
+            {
+                //Save (as)
+            }
+            if (GuiButton((Rectangle){ 8 + 3 * (TOOL_BUTTON_S + 8), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_FILE_EXPORT, "")))
+            {
+                //Export MIDI
+            }
+            if (GuiButton((Rectangle){ 8 + 4 * (TOOL_BUTTON_S + 8), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_WAVE, "")))
+            {
+                //Render Audio
+            }
+
+            //Transport
+#define TRANSPORT_X (TOP_PANEL_W / 2 + 8 - (TOOL_BUTTON_S * 5 + 8 * 4) / 2)
+
+            if (GuiButton((Rectangle){ TRANSPORT_X, 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_PLAYER_PLAY, "")))
+            {
+                //Play
+            }
+            if (GuiButton((Rectangle){ float(TRANSPORT_X + TOOL_BUTTON_S + 8), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_REPEAT, "")))
+            {
+                //Loop Pattern Toggle
+            }
+            if (GuiButton((Rectangle){ float(TRANSPORT_X + 2 * (TOOL_BUTTON_S + 8)), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_PLAYER_STOP, "")))
+            {
+                //Stop
+            }
+            if (GuiButton((Rectangle){ float(TRANSPORT_X + 3 * (TOOL_BUTTON_S + 8)), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_PLAYER_RECORD, "")))
+            {
+                //Record/Edit Toggle
+            }
+            if (GuiButton((Rectangle){ float(TRANSPORT_X + 4 * (TOOL_BUTTON_S + 8)), 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
+                GuiIconText(ICON_MAGNET, "")))
+            {
+                //Follow Playback Toggle
+            }
 
         EndDrawing();
     }
