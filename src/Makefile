@@ -160,7 +160,7 @@ ifeq ($(PLATFORM),PLATFORM_RPI)
 endif
 
 
-SRCS=Main.cpp
+SRCS=Main.cpp Scheduler.cpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: sftracker
