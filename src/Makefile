@@ -171,6 +171,14 @@ sftracker: $(OBJS)
 %.o: %.cpp
 	$(CC) $(CPPFLAGS) $(INCLUDE_PATHS) -D$(PLATFORM) -c $<
 
+depend: .depend
+
+.depend: $(SRCS)
+	rm -f "$@"
+	$(CC) $(CPPFLAGS)  $(INCLUDE_PATHS) -D$(PLATFORM) -MM $^ -MF "$@"
+
+include .depend
+
 clean:
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
   ifeq ($(PLATFORM_OS),WINDOWS)
@@ -189,3 +197,4 @@ ifeq ($(PLATFORM),PLATFORM_RPI)
 	find . -type f -executable -delete
 	rm -fv *.o
 endif
+	rm -f .depend

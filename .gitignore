@@ -1,5 +1,6 @@
 ref/
 src/*.o
 src/sftracker
+.depend
 .DS_Store
 *.sublime-workspace
