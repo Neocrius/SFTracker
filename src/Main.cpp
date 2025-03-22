@@ -207,8 +207,8 @@ int main()
 
             //Top Panel
 
-            const int topIcons[] = {ICON_FILETYPE_AUDIO, ICON_FILETYPE_AUDIO, ICON_TOOLS, ICON_GEAR_BIG, ICON_FX};
-            DrawTabbedArea((Rectangle){ 8, 8, TOP_PANEL_W, TOP_PANEL_H + TOP_PANEL_Y - 8}, 5, topIcons, &currentTab);
+            const int topIcons[] = {ICON_FILETYPE_AUDIO, ICON_FILETYPE_AUDIO, ICON_TOOLS, ICON_FX, ICON_GEAR_BIG, ICON_HELP_BOX};
+            DrawTabbedArea((Rectangle){ 8, 8, TOP_PANEL_W, TOP_PANEL_H + TOP_PANEL_Y - 8}, 6, topIcons, &currentTab);
 
             Rectangle topPanelBounds = {16, TOP_PANEL_Y + 8, TOP_PANEL_W - 16, TOP_PANEL_H - 16};
 
@@ -257,7 +257,7 @@ int main()
             }
 
             //Transport
-#define TRANSPORT_X (TOP_PANEL_W / 2 + 8 - (TOOL_BUTTON_S * 5 + 8 * 4) / 2)
+#define TRANSPORT_X (TOP_PANEL_W / 2 + 8 - (TOOL_BUTTON_S * 6 + 8 * (5 + 2)) / 2)
 
             if (GuiButton((Rectangle){ TRANSPORT_X, 8, TOOL_BUTTON_S, TOOLBAR_HEIGHT },
                 GuiIconText(ICON_PLAYER_PLAY, "")))

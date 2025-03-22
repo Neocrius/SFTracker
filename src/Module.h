@@ -1,6 +1,7 @@
 #pragma once
 
-#include <iostream>
+#include "Instrument.h"
+#include "SoundFont.h"
 
 namespace sft
 {
@@ -114,7 +115,6 @@ private:
 		int noteColumns;	//1..MAX_NOTE_COLUMNS
 		int fxColumns;		//1..MAX_FX_COLUMNS
 		int velocityScale;
-		bool drums;			//show drum note names
 	};
 
 	Track 					m_tracks[16];
