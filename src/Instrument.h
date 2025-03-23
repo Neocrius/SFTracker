@@ -27,6 +27,7 @@ public:
 	void programSelect(int channel);
 
 	//serialization
+	
 	void serializeOut(std::ostream &os);
 
 	bool serializeIn(std::istream &is);
