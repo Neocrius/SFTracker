@@ -7,3 +7,6 @@
 [submodule "deps/fluidsynth"]
 	path = deps/fluidsynth
 	url = https://github.com/FluidSynth/fluidsynth
+[submodule "deps/scl"]
+	path = deps/scl
+	url = https://github.com/WizardCarter/simple-config-library

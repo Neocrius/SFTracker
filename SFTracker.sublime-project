@@ -7,6 +7,10 @@
 			"file_exclude_patterns": ["*.o", "sftracker"]
 		},
 		{
+			"name": "FluidSynth",
+			"path": "deps/fluidsynth/include/fluidsynth",
+		},
+		{
 			"name": "RayGui",
 			"path": "deps/raygui/src",
 		},

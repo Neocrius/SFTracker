@@ -3,6 +3,7 @@
 RAYLIB_PATH        ?= ../deps/raylib
 RAYGUI_PATH        ?= ../deps/raygui
 FLUIDSYNTH_PATH    ?= ../deps/fluidsynth/build
+SCL_PATH           ?= ../deps/scl/include/SCL
 
 export PLATFORM    ?= PLATFORM_DESKTOP
 
@@ -75,7 +76,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 
-INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYGUI_PATH)/src
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYGUI_PATH)/src -I$(SCL_PATH)
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),BSD)
