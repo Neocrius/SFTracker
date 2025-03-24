@@ -73,10 +73,10 @@ void Scheduler::start(struct timeval& startTime)
     m_next.tv_usec 	= startTime.tv_usec;
 }
 
-void Scheduler::waitForTick(int bpm)
+void Scheduler::waitForTick(int rate)
 {
-    m_next.tv_sec 	+= (25 / bpm) / 10;
-    m_next.tv_usec	+= ((2500000 / bpm) % 1000000);
+    m_next.tv_sec 	+= (60 / rate);
+    m_next.tv_usec	+= ((60000000 / rate) % 1000000);
     
     while (m_next.tv_usec > 1000000)
     {

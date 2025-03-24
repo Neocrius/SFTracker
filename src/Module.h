@@ -3,6 +3,9 @@
 #include "Instrument.h"
 #include "SoundFont.h"
 
+#define MAX_NOTE_COLUMNS	16
+#define MAX_FX_COLUMNS		4
+
 namespace sft
 {
 
@@ -12,6 +15,30 @@ public:
 	Module();
 
 	~Module();
+
+	Module* current() const							{ return m_current; }
+
+	void setCurrent(Module* module)					{ m_current = module; }
+
+	//options
+
+	int bpm() const									{ return m_bpm; }
+
+	void setBpm(int bpm)							{ m_bpm = bpm; }
+
+	int lpb() const									{ return m_lpb; }
+
+	void setLpb(int lpb)							{ m_lpb = lpb; }
+
+	int tpl() const									{ return m_tpl; }
+
+	void setTpl(int tpl)							{ m_tpl = tpl; }
+
+	int tickRate() const							{ return m_bpm * m_lpb * m_tpl; }
+
+	bool useFlats() const							{ return m_useFlats; }
+
+	void setUseFlats(bool useFlats)					{ m_useFlats = useFlats; }
 
 	//SoundFonts
 
@@ -37,16 +64,28 @@ public:
 
 	int fxColumns(int track)						{ return m_tracks[track].fxColumns; }
 
+	int velocityScale(int track)					{ return m_tracks[track].velocityScale; }
+
+	bool isDrums(int track)							{ return m_tracks[track].drums; }
+
 	void setTrackName(int track,
 					  const std::string &name)		{ m_tracks[track].name = name; }
 
-	void setNoteColumns(int track);
+	void setNoteColumns(int track,
+						int columns)				{ m_tracks[track].noteColumns = columns; }
 
-	void setFxColumns(int track);
+	void setFxColumns(int track,
+					  int columns)					{ m_tracks[track].fxColumns = columns; }
+
+	void setVelocityScale(int track,
+						  int scale)				{ m_tracks[track].velocityScale = scale; }
+
+	void setDrums(int track,
+				  bool drums)						{ m_tracks[track].drums = drums; }
 
 	//patterns
 
-	int patterns() const;
+	int patterns() const							{ return m_patterns.size(); }
 
 	int addPattern();								//returns the new pattern number
 
@@ -105,6 +144,8 @@ public:
 	bool serializeIn(std::istream &is);
 
 private:
+	static Module* 			m_current;
+
 	std::vector<SoundFont>	m_soundFonts;
 	std::vector<Instrument>	m_instruments;
 	std::vector<Pattern>	m_patterns;
@@ -115,6 +156,7 @@ private:
 		int noteColumns;	//1..MAX_NOTE_COLUMNS
 		int fxColumns;		//1..MAX_FX_COLUMNS
 		int velocityScale;
+		bool drums;
 	};
 
 	Track 					m_tracks[16];
@@ -132,6 +174,11 @@ private:
 	int						m_editPosition;
 	int						m_editingTrack;
 	int						m_editingColumn;
+
+	int						m_bpm		= 96;
+	int						m_lpb		= 4;
+	int						m_tpl		= 6;
+	bool 					m_useFlats 	= false;
 };
 
 }	//namespace sft

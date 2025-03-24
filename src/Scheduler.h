@@ -15,7 +15,7 @@ public:
 
 	void start(struct timeval& startTime);
 
-	void waitForTick(int bpm);
+	void waitForTick(int rate);	//rate = ticks / minute
 
 	void stop();
 	

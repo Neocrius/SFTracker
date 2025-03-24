@@ -16,7 +16,7 @@ Config::Config()
 {
 	config_file rfile(std::string(getenv("HOME")) + "/.sftracker", config_file::READ);
 
-	m_soundDriver = rfile.get<std::string>("sound_driver");
+	m_searchPaths = rfile.get<std::string>("sf_search_paths");
 	
 	rfile.close();
 }
@@ -25,7 +25,7 @@ Config::~Config()
 {
 	config_file file(std::string(getenv("HOME")) + "/.sftracker", config_file::WRITE);
    
-	file.put("sound_driver", m_soundDriver);
+	file.put("sf_search_paths", m_searchPaths);
 
 	file.write_changes();
 
