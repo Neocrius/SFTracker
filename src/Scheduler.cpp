@@ -24,24 +24,24 @@ Scheduler& Scheduler::singleton()
 #ifdef __linux
 
 Scheduler::Scheduler()
-:	m_rtc(-1),
-    m_rtcFrequency(0),
-    m_rtcPIE(false)
+:	_rtc(-1),
+    _rtcFrequency(0),
+    _rtcPIE(false)
 {
     bool success = false;
 
-    m_rtc = open("/dev/rtc", O_RDONLY);
+    _rtc = open("/dev/rtc", O_RDONLY);
 
-    if (m_rtc != -1)
+    if (_rtc != -1)
     {
-        m_rtcFrequency = MAXIMUM_RTC_FREQ;
-        m_rtcPIE = 0;
+        _rtcFrequency = MAXIMUM_RTC_FREQ;
+        _rtcPIE = 0;
 
-        while (m_rtcFrequency >= MINIMUM_RTC_FREQ && !success)
+        while (_rtcFrequency >= MINIMUM_RTC_FREQ && !success)
         {
-            if (ioctl(m_rtc, RTC_UIE_OFF, 0) == -1 || ioctl(m_rtc, RTC_IRQP_SET, rtcFrequency) == -1)
+            if (ioctl(_rtc, RTC_UIE_OFF, 0) == -1 || ioctl(_rtc, RTC_IRQP_SET, rtcFrequency) == -1)
             {
-                m_rtcFrequency /= 2;
+                _rtcFrequency /= 2;
             }
             else
             {
@@ -59,9 +59,9 @@ Scheduler::Scheduler()
 
 Scheduler::~Scheduler()
 {
-	if (m_rtc > -1)
+	if (_rtc > -1)
 	{
-		close(m_rtc);
+		close(_rtc);
 	}
 }
 
@@ -69,34 +69,34 @@ Scheduler::~Scheduler()
 
 void Scheduler::start(struct timeval& startTime)
 {
-	m_next.tv_sec 	= startTime.tv_sec;
-    m_next.tv_usec 	= startTime.tv_usec;
+	_next.tv_sec 	= startTime.tv_sec;
+    _next.tv_usec 	= startTime.tv_usec;
 }
 
 void Scheduler::waitForTick(int rate)
 {
-    m_next.tv_sec 	+= (60 / rate);
-    m_next.tv_usec	+= ((60000000 / rate) % 1000000);
+    _next.tv_sec 	+= (60 / rate);
+    _next.tv_usec	+= ((60000000 / rate) % 1000000);
     
-    while (m_next.tv_usec > 1000000)
+    while (_next.tv_usec > 1000000)
     {
-        ++m_next.tv_sec;
-        m_next.tv_usec -= 1000000;
+        ++_next.tv_sec;
+        _next.tv_usec -= 1000000;
     }
 
     struct timeval now;
     gettimeofday(&now, NULL);
 
 #ifdef __linux
-    if (m_rtc > -1)
+    if (_rtc > -1)
     {
-        if (!m_rtcPIE)
+        if (!_rtcPIE)
         {
-            ioctl(m_rtc, RTC_PIE_ON, 0);
-            m_rtcPIE = true;
+            ioctl(_rtc, RTC_PIE_ON, 0);
+            _rtcPIE = true;
         }
 
-        while ((m_next.tv_sec - now.tv_sec) > 0 || ((m_next.tv_sec - now.tv_sec) == 0 && (m_next.tv_usec - now.tv_usec) > 1000000 / m_rtcFrequency))
+        while ((_next.tv_sec - now.tv_sec) > 0 || ((_next.tv_sec - now.tv_sec) == 0 && (_next.tv_usec - now.tv_usec) > 1000000 / _rtcFrequency))
         {
             unsigned long l;
             ssize_t n = read(rtc, &l, sizeof(unsigned long));
@@ -104,7 +104,7 @@ void Scheduler::waitForTick(int rate)
             gettimeofday(&now, NULL);
         }
 
-        while ((m_next.tv_sec - now.tv_sec) > 0 || ((m_next.tv_sec - now.tv_sec) == 0 && (m_next.tv_usec - now.tv_usec) > 0))
+        while ((_next.tv_sec - now.tv_sec) > 0 || ((_next.tv_sec - now.tv_sec) == 0 && (_next.tv_usec - now.tv_usec) > 0))
         {
             gettimeofday(&now, NULL);
         }
@@ -114,8 +114,8 @@ void Scheduler::waitForTick(int rate)
 #endif
     
     struct timespec req, rem;
-    req.tv_sec 	= m_next.tv_sec - now.tv_sec;
-    req.tv_nsec = (m_next.tv_usec - now.tv_usec) * 1000;
+    req.tv_sec 	= _next.tv_sec - now.tv_sec;
+    req.tv_nsec = (_next.tv_usec - now.tv_usec) * 1000;
     
     while (req.tv_nsec < 0)
     {
@@ -132,10 +132,10 @@ void Scheduler::waitForTick(int rate)
 void Scheduler::stop()
 {
 #ifdef __linux
-    if (m_rtcPIE && m_rtc > -1)
+    if (_rtcPIE && _rtc > -1)
     {
-        ioctl(m_rtc, RTC_PIE_OFF, 0);
-        m_rtcPIE = false;
+        ioctl(_rtc, RTC_PIE_OFF, 0);
+        _rtcPIE = false;
     }
 #endif
 }

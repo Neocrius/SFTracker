@@ -13,18 +13,18 @@ FluidSynth &FluidSynth::singleton()
 
 FluidSynth::FluidSynth()
 {
-	m_settings 	= new_fluid_settings();
-	fluid_settings_setstr(m_settings, "audio.driver", "alsa");
+	_settings 	= new_fluid_settings();
+	fluid_settings_setstr(_settings, "audio.driver", "alsa");
 
-	m_synth 	= new_fluid_synth(m_settings);
-	m_adriver 	= new_fluid_audio_driver(m_settings, m_synth);
+	_synth 	= new_fluid_synth(_settings);
+	_adriver 	= new_fluid_audio_driver(_settings, _synth);
 }
 
 FluidSynth::~FluidSynth()
 {
-	delete_fluid_audio_driver(m_adriver);
-	delete_fluid_synth(m_synth);
-	delete_fluid_settings(m_settings);
+	delete_fluid_audio_driver(_adriver);
+	delete_fluid_synth(_synth);
+	delete_fluid_settings(_settings);
 }
 
 }	//namespace sft

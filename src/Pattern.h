@@ -8,21 +8,23 @@ namespace sft
 class Pattern
 {
 public:
-	int length() const	{ return m_lines.size(); }
+	typedef std::shared_ptr<Pattern> P;
+	
+	int length() const	{ return _lines.size(); }
 
 	void setLength();
 
 	//reading
 
-	char note(int track, int column, int line) const		{ return m_lines[line].t[track].notes[column]; }
+	char note(int track, int column, int line) const		{ return _lines[line].t[track].notes[column]; }
 
-	char velocity(int track, int column, int line) const	{ return m_lines[line].t[track].velocities[column]; }
+	char velocity(int track, int column, int line) const	{ return _lines[line].t[track].velocities[column]; }
 
-	char fx(int track, int column, int line) const			{ return m_lines[line].t[track].fx[column]; }
+	char fx(int track, int column, int line) const			{ return _lines[line].t[track].fx[column]; }
 
-	char parameter(int track, int column, int line) const	{ return m_lines[line].t[track].parameters[column]; }
+	char parameter(int track, int column, int line) const	{ return _lines[line].t[track].parameters[column]; }
 
-	int instrument(int track, int line) const				{ return m_lines[line].t[track].instrument; }
+	int instrument(int track, int line) const				{ return _lines[line].t[track].instrument; }
 
 	//writing
 
@@ -49,7 +51,7 @@ private:
 		TrackLine 	t[16];
 	};
 
-	std::vector<Line> m_lines;
+	std::vector<Line> _lines;
 };
 
 }	//namespace sft

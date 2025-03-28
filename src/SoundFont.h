@@ -12,19 +12,19 @@ public:
 			  std::string &searchPaths);
 
 	SoundFont(const SoundFont &other)
-	:	m_fileName(other.m_fileName),
-		m_id(other.m_id)
+	:	_fileName(other._fileName),
+		_id(other._id)
 	{}
 
 	~SoundFont();
 
-	std::string fileName() const 	{ return m_fileName; }
+	std::string fileName() const 	{ return _fileName; }
 
-	int id() const 					{ return m_id; }	//-1 if not found
+	int id() const 					{ return _id; }	//-1 if not found
 
 private:
-	std::string m_fileName;
-	int 		m_id		= -1;
+	std::string _fileName;
+	int 		_id		= -1;
 }
 
 }	//namespace sft

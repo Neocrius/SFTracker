@@ -64,9 +64,9 @@ std::string fileNameFromPath(const std::string &s)
 SoundFont::SoundFont(std::string &fileName,
 			  		 std::string &searchPaths)
 {
-	m_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), normalizePath(fileName).c_str(), 0);
+	_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), normalizePath(fileName).c_str(), 0);
 
-	if (m_sf < 0)
+	if (_sf < 0)
 	{
 		std::string fileName 			= fileNameFromPath(fileName);
 		std::vector<std::string> paths 	= split(searchPaths, ";");
@@ -75,27 +75,27 @@ SoundFont::SoundFont(std::string &fileName,
 		{
 			std::string tryFileName = normalizePath(path, true) + fileName;
 
-			m_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), tryFileName.c_str(), 0);
+			_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), tryFileName.c_str(), 0);
 
-			if (m_sf >= 0)
+			if (_sf >= 0)
 			{
-				m_fileName = tryFileName;
+				_fileName = tryFileName;
 				break;
 			}
 		}
 	}
 	else
 	{
-		m_fileName = fileName;
+		_fileName = fileName;
 	}
 }
 
 SoundFont::~SoundFont()
 {
-	if (m_sf >= 0)
+	if (_sf >= 0)
 	{
-		fluid_synth_sfunload(FluidSynth::singleton().synth(), m_sf);
-		m_sf = -1;
+		fluid_synth_sfunload(FluidSynth::singleton().synth(), _sf);
+		_sf = -1;
 	}
 }
 

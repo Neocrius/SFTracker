@@ -15,21 +15,21 @@ public:
 
 	void start(struct timeval& startTime);
 
-	void waitForTick(int rate);	//rate = ticks / minute
+	void waitForTick(int rate);	//rate = ticks / minute = bpm * lpb * tpl
 
 	void stop();
 	
 private:
-    struct timeval 	m_next;
+    struct timeval 	_next;
 
 #ifdef __linux
 	Scheduler();
 
 	~Scheduler();
 
-    int 			m_rtc;
-    int 			m_rtcFrequency;
-    bool 			m_rtcPIE;
+    int 			_rtc;
+    int 			_rtcFrequency;
+    bool 			_rtcPIE;
 #endif
 };
 

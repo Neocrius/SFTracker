@@ -16,7 +16,7 @@ Config::Config()
 {
 	config_file rfile(std::string(getenv("HOME")) + "/.sftracker", config_file::READ);
 
-	m_searchPaths = rfile.get<std::string>("sf_search_paths");
+	_searchPaths = rfile.get<std::string>("sf_search_paths");
 	
 	rfile.close();
 }
@@ -25,7 +25,7 @@ Config::~Config()
 {
 	config_file file(std::string(getenv("HOME")) + "/.sftracker", config_file::WRITE);
    
-	file.put("sf_search_paths", m_searchPaths);
+	file.put("sf_search_paths", _searchPaths);
 
 	file.write_changes();
 

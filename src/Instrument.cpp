@@ -7,7 +7,7 @@ namespace sft
 
 void Instrument::programSelect(int channel)
 {
-	fluid_synth_program_select(Synth::singleton()->fs(), channel, m_sf, m_bank, m_patch);
+	fluid_synth_progra_select(Synth::singleton()->fs(), channel, _sf, _bank, _patch);
 }
 
 void serializeOut(std::ostream &os)

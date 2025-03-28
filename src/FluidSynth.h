@@ -12,16 +12,16 @@ class FluidSynth
 public:
 	FluidSynth &singleton();
 
-	fluid_synth_t* synth() const	{ return m_synth; }
+	fluid_synth_t* synth() const	{ return _synth; }
 
 private:
 	FluidSynth();
 
 	~FluidSynth();
 
-	fluid_settings_t 		*m_settings;
-	fluid_synth_t 			*m_synth;
-	fluid_audio_driver_t 	*m_adriver;
+	fluid_settings_t 		*_settings;
+	fluid_synth_t 			*_synth;
+	fluid_audio_driver_t 	*_adriver;
 }
 
 }	//namespace sft

@@ -16,76 +16,76 @@ public:
 
 	~Module();
 
-	Module* current() const							{ return m_current; }
+	Module* current() const							{ return _current; }
 
-	void setCurrent(Module* module)					{ m_current = module; }
+	void setCurrent(Module* module)					{ _current = module; }
 
 	//options
 
-	int bpm() const									{ return m_bpm; }
+	int bpm() const									{ return _bpm; }
 
-	void setBpm(int bpm)							{ m_bpm = bpm; }
+	void setBpm(int bpm)							{ _bpm = bpm; }
 
-	int lpb() const									{ return m_lpb; }
+	int lpb() const									{ return _lpb; }
 
-	void setLpb(int lpb)							{ m_lpb = lpb; }
+	void setLpb(int lpb)							{ _lpb = lpb; }
 
-	int tpl() const									{ return m_tpl; }
+	int tpl() const									{ return _tpl; }
 
-	void setTpl(int tpl)							{ m_tpl = tpl; }
+	void setTpl(int tpl)							{ _tpl = tpl; }
 
-	int tickRate() const							{ return m_bpm * m_lpb * m_tpl; }
+	int tickRate() const							{ return _bpm * _lpb * _tpl; }
 
-	bool useFlats() const							{ return m_useFlats; }
+	bool useFlats() const							{ return _useFlats; }
 
-	void setUseFlats(bool useFlats)					{ m_useFlats = useFlats; }
+	void setUseFlats(bool useFlats)					{ _useFlats = useFlats; }
 
 	//SoundFonts
 
-	int soundFonts() const 							{ return m_soundFonts.size(); }
+	int soundFonts() const 							{ return _soundFonts.size(); }
 
-	const SoundFont &soundFont(int index) const		{ return m_soundFonts[index]; }
+	const SoundFont &soundFont(int index) const		{ return _soundFonts[index]; }
 
-	void addSoundFont(const SoundFont &s)			{ m_soundFonts.push_back(s); }
+	void addSoundFont(const SoundFont &s)			{ _soundFonts.push_back(s); }
 
 	bool removeUnusedSoundFonts();					//returns true if removed
 
 	//instruments
 
-	int instruments() const							{ return m_instruments.size(); }
+	int instruments() const							{ return _instruments.size(); }
 
-	const Instrument &instrument(int index) const	{ return m_instruments[index]; }
+	const Instrument &instrument(int index) const	{ return _instruments[index]; }
 
 	//tracks (MIDI channels)
 
-	const std::string &trackName(int track) const	{ return m_tracks[track].name; }
+	const std::string &trackName(int track) const	{ return _tracks[track].name; }
 
-	int noteColumns(int track)						{ return m_tracks[track].noteColumns; }
+	int noteColumns(int track)						{ return _tracks[track].noteColumns; }
 
-	int fxColumns(int track)						{ return m_tracks[track].fxColumns; }
+	int fxColumns(int track)						{ return _tracks[track].fxColumns; }
 
-	int velocityScale(int track)					{ return m_tracks[track].velocityScale; }
+	int velocityScale(int track)					{ return _tracks[track].velocityScale; }
 
-	bool isDrums(int track)							{ return m_tracks[track].drums; }
+	bool isDrums(int track)							{ return _tracks[track].drums; }
 
 	void setTrackName(int track,
-					  const std::string &name)		{ m_tracks[track].name = name; }
+					  const std::string &name)		{ _tracks[track].name = name; }
 
 	void setNoteColumns(int track,
-						int columns)				{ m_tracks[track].noteColumns = columns; }
+						int columns)				{ _tracks[track].noteColumns = columns; }
 
 	void setFxColumns(int track,
-					  int columns)					{ m_tracks[track].fxColumns = columns; }
+					  int columns)					{ _tracks[track].fxColumns = columns; }
 
 	void setVelocityScale(int track,
-						  int scale)				{ m_tracks[track].velocityScale = scale; }
+						  int scale)				{ _tracks[track].velocityScale = scale; }
 
 	void setDrums(int track,
-				  bool drums)						{ m_tracks[track].drums = drums; }
+				  bool drums)						{ _tracks[track].drums = drums; }
 
 	//patterns
 
-	int patterns() const							{ return m_patterns.size(); }
+	int patterns() const							{ return _patterns.size(); }
 
 	int addPattern();								//returns the new pattern number
 
@@ -95,13 +95,13 @@ public:
 
 	//playback order
 
-	int orderLength() 								{ return m_order.size(); }
+	int orderLength() 								{ return _order.size(); }
 
-	int orderPosition() const 						{ return m_orderPosition; }
+	int orderPosition() const 						{ return _orderPosition; }
 
-	int orderPattern() const 						{ return m_order[m_orderPosition].pattern; }
+	int orderPattern() const 						{ return _order[_orderPosition].pattern; }
 
-	bool orderIsTrackEnabled(int track) const 		{ return (m_order[m_orderPosition].trackMask & (1 << track)) != 0; }
+	bool orderIsTrackEnabled(int track) const 		{ return (_order[_orderPosition].trackMask & (1 << track)) != 0; }
 
 	void orderInsertBefore();
 
@@ -109,27 +109,27 @@ public:
 
 	void orderDelete();
 
-	void orderSetPattern(int pattern)				{ m_order[m_orderPosition].pattern = pattern; }
+	void orderSetPattern(int pattern)				{ _order[_orderPosition].pattern = pattern; }
 
 	void orderEnableTrack(int track, bool enable);
 
 	//playback and recording/editing
 
-	int playPosition() const 						{ return m_playPosition; }
+	int playPosition() const 						{ return _playPosition; }
 
 	void setPlayPosition(int pos,
 						 bool loopPattern);
 
-	int editPoisition() const						{ return m_editPosition; }
+	int editPoisition() const						{ return _editPosition; }
 
 	void setEditPosition(int pos,
 						 bool stayInPattern);
 
-	int editingTrack() const						{ return m_editingTrack; }
+	int editingTrack() const						{ return _editingTrack; }
 
 	void setEditingTrack(int track);
 
-	int editingColumn() const						{ return m_editingColumn; }
+	int editingColumn() const						{ return _editingColumn; }
 
 	void setEditingColumn();
 
@@ -144,11 +144,11 @@ public:
 	bool serializeIn(std::istream &is);
 
 private:
-	static Module* 			m_current;
+	static Module* 			_current;
 
-	std::vector<SoundFont>	m_soundFonts;
-	std::vector<Instrument>	m_instruments;
-	std::vector<Pattern>	m_patterns;
+	std::vector<SoundFont>	_soundFonts;
+	std::vector<Instrument>	_instruments;
+	std::vector<Pattern::P>	_patterns;
 
 	struct Track
 	{
@@ -159,7 +159,7 @@ private:
 		bool drums;
 	};
 
-	Track 					m_tracks[16];
+	Track 					_tracks[16];
 
 	struct OrderItem
 	{
@@ -167,18 +167,18 @@ private:
 		int trackMask;
 	};
 
-	std::vector<OrderItem>	m_order;
-	int 					m_orderPosition;
+	std::vector<OrderItem>	_order;
+	int 					_orderPosition;
 
-	int						m_playPosition;
-	int						m_editPosition;
-	int						m_editingTrack;
-	int						m_editingColumn;
+	int						_playPosition;
+	int						_editPosition;
+	int						_editingTrack;
+	int						_editingColumn;
 
-	int						m_bpm		= 96;
-	int						m_lpb		= 4;
-	int						m_tpl		= 6;
-	bool 					m_useFlats 	= false;
+	int						_bpm		= 96;
+	int						_lpb		= 4;
+	int						_tpl		= 6;
+	bool 					_useFlats 	= false;
 };
 
 }	//namespace sft
