@@ -8,19 +8,19 @@ namespace sft
 class SoundFont
 {
 public:
-	SoundFont(std::string &fileName,
-			  std::string &searchPaths);
-
-	SoundFont(const SoundFont &other)
-	:	_fileName(other._fileName),
-		_id(other._id)
-	{}
-
 	~SoundFont();
+
+	bool load(std::string &fileName);
 
 	std::string fileName() const 	{ return _fileName; }
 
 	int id() const 					{ return _id; }	//-1 if not found
+
+	//serialization
+	
+	void serializeOut(std::ostream &os) const;
+
+	bool serializeIn(std::istream &is);
 
 private:
 	std::string _fileName;

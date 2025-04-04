@@ -2,9 +2,7 @@
 
 #include "Instrument.h"
 #include "SoundFont.h"
-
-#define MAX_NOTE_COLUMNS	16
-#define MAX_FX_COLUMNS		4
+#include "Pattern.h"
 
 namespace sft
 {
@@ -35,6 +33,9 @@ public:
 	void setTpl(int tpl)							{ _tpl = tpl; }
 
 	int tickRate() const							{ return _bpm * _lpb * _tpl; }
+
+	//for MIDI
+	int ticksPerBeat() const						{ return _lpb * _tpl; }
 
 	bool useFlats() const							{ return _useFlats; }
 
@@ -156,10 +157,9 @@ private:
 		int noteColumns;	//1..MAX_NOTE_COLUMNS
 		int fxColumns;		//1..MAX_FX_COLUMNS
 		int velocityScale;
-		bool drums;
 	};
 
-	Track 					_tracks[16];
+	Track 					_tracks[TRACK_COUNT];
 
 	struct OrderItem
 	{
@@ -170,15 +170,15 @@ private:
 	std::vector<OrderItem>	_order;
 	int 					_orderPosition;
 
-	int						_playPosition;
-	int						_editPosition;
-	int						_editingTrack;
-	int						_editingColumn;
+	int						_playPosition	= 0;
+	int						_editPosition	= 0;
+	int						_editingTrack	= 0;
+	int						_editingColumn	= 0;
 
-	int						_bpm		= 96;
-	int						_lpb		= 4;
-	int						_tpl		= 6;
-	bool 					_useFlats 	= false;
+	int						_bpm			= 120;
+	int						_lpb			= 4;
+	int						_tpl			= 6;
+	bool 					_useFlats 		= false;
 };
 
 }	//namespace sft

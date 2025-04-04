@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+#define TRACK_COUNT			16
+#define MAX_NOTE_COLUMNS	16
+#define MAX_FX_COLUMNS		4
+
 namespace sft
 {
 
@@ -39,16 +43,16 @@ public:
 private:
 	struct TrackLine
 	{
-		char 	notes[16];
-		char	velocities[16];
-		char	fx[4];
-		char	parameters[4];
+		char 	notes[MAX_NOTE_COLUMNS];
+		char	velocities[MAX_NOTE_COLUMNS];
+		char	fx[MAX_FX_COLUMNS];
+		char	parameters[MAX_FX_COLUMNS];
 		int 	instrument;		//int for alignment but only goes up to 99
 	};
 
 	struct Line
 	{
-		TrackLine 	t[16];
+		TrackLine 	t[TRACK_COUNT];
 	};
 
 	std::vector<Line> _lines;

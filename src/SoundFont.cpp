@@ -1,75 +1,19 @@
 #include "SoundFont.h"
 #include "FluidSynth.h"
+#include "Misc.h"
 #include <synth.h>
 
 namespace sft
 {
 
-std::vector<std::string> split(const std::string &s, const std::string &delimiter)
-{
-    std::vector<std::string> tokens;
-    size_t pos = 0;
-    std::string token;
-    while ((pos = s.find(delimiter)) != std::string::npos)
-    {
-        token = s.substr(0, pos);
-        tokens.push_back(token);
-        s.erase(0, pos + delimiter.length());
-    }
-    tokens.push_back(s);
-
-    return tokens;
-}
-
-std::string normalizePath(const std::string &s, bool appendSlash = false)
-{
-	std::string res;
-
-	for (size_t i = 0; i < s.length(); ++i)
-	{
-		if (s[i] == '~')
-		{
-			res = getenv("HOME");
-		}
-		else if (s[i] == '\\')
-		{
-			res.append('/');
-		}
-		else
-		{
-			res.append(s[i]);
-		}
-	}
-
-	if (appendSlash && res[res.length() - 1] != '/')
-	{
-		res.append('/');
-	}
-
-	return res;
-}
-
-std::string fileNameFromPath(const std::string &s)
-{
-	int slash = rfind(s, '/');
-
-	if (slash >= 0)
-	{
-		return s.substr(slash + 1, s.length() - slash - 1);
-	}
-
-	return s;
-}
-
-SoundFont::SoundFont(std::string &fileName,
-			  		 std::string &searchPaths)
+bool SoundFont::load(std::string &fileName)
 {
 	_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), normalizePath(fileName).c_str(), 0);
 
 	if (_sf < 0)
 	{
 		std::string fileName 			= fileNameFromPath(fileName);
-		std::vector<std::string> paths 	= split(searchPaths, ";");
+		std::vector<std::string> paths 	= split(Config::singleton().searchPaths(), ";");
 
 		for (const std::string &path : paths)
 		{
@@ -80,14 +24,18 @@ SoundFont::SoundFont(std::string &fileName,
 			if (_sf >= 0)
 			{
 				_fileName = tryFileName;
-				break;
+				return true;
 			}
 		}
+
+		return false;
 	}
 	else
 	{
 		_fileName = fileName;
 	}
+
+	return true;
 }
 
 SoundFont::~SoundFont()
@@ -97,6 +45,21 @@ SoundFont::~SoundFont()
 		fluid_synth_sfunload(FluidSynth::singleton().synth(), _sf);
 		_sf = -1;
 	}
+}
+
+void SoundFont::serializeOut(std::ostream &os) const
+{
+	writeString(os, _fileName);
+}
+
+bool SoundFont::serializeIn(std::istream &is)
+{
+	if (!readString(is, &_fileName))
+	{
+		return false;
+	}
+
+	return load(_fileName);
 }
 
 }	//namespace sft
