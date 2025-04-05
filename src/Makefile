@@ -68,7 +68,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 
-CPPFLAGS += -O1 -s -Wall -std=c++11
+CPPFLAGS += -O1 -s -Wall -std=c++14
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),WINDOWS)
@@ -85,7 +85,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
 endif
 
 # Define library paths containing required libs.
-LDFLAGS = -std=c++11 -L. -L$(RAYLIB_PATH)/src
+LDFLAGS = -std=c++14 -L. -L$(RAYLIB_PATH)/src
 
 ifeq ($(PLATFORM_OS),OSX)
     LDFLAGS += -F$(FLUIDSYNTH_PATH)/src -rpath $(FLUIDSYNTH_PATH)/src
