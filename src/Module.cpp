@@ -15,6 +15,26 @@ Module::~Module()
 
 }
 
+static Module::P Module::current()
+{
+	if (_current)
+	{
+		const std::shared_lock<std::shared_mutex> lock(_current._mutex);
+		return _current;
+	}
+
+	return {};
+}
+
+static void Module::setCurrent(Module::P module)
+{
+	if (_current)
+	{
+		const std::unique_lock<std::shared_mutex> lock(_current._mutex);
+		_current = module;
+	}
+}
+
 void Module::removeUnusedSoundFonts()
 {
 

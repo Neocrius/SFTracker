@@ -16,9 +16,9 @@ public:
 
 	typedef std::shared_ptr<Module> P;
 
-	static P current() const						{ return _current; }
+	static P current() const;
 
-	static void setCurrent(P module)				{ _current = module; }
+	static void setCurrent(P module);
 
 	//options
 
