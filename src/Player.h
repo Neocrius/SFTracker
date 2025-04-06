@@ -33,6 +33,8 @@ private:
 	Position			_nextPos;
 
 	int					_lastInstrument[TRACK_COUNT];
+	int					_lastDefVelocity[TRACK_COUNT];
+	int					_lastNote[TRACK_COUNT * MAX_NOTE_COLUMNS]
 }
 
 }	//namespace sft
