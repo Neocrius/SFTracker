@@ -12,6 +12,7 @@ public:
 
 	void setSearchPaths(const std::string &paths)	{ _searchPaths = paths; }
 
+	//TODO: store GUI theme
 private:
 	Config();
 

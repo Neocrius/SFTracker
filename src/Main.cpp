@@ -20,6 +20,27 @@
 #define TRACK_MASK_H        (16 + 2 * 8)
 #define TRACK_CHECK_W       32
 
+/*
+*   TODO: check CPU usage on Raspberry Pi to see whether it would make sense to switch to a custom frame loop
+*   This requires recompiling Raylib with SUPPORT_CUSTOM_FRAME_CONTROL
+*   Taken from Raylib comments:
+*
+*   NOTE: WARNING: This is an example for advanced users willing to have full control over
+*   the frame processes. By default, EndDrawing() calls the following processes:
+*       1. Draw remaining batch data: rlDrawRenderBatchActive()
+*       2. SwapScreenBuffer()
+*       3. Frame time control: WaitTime()
+*       4. PollInputEvents()
+*
+*   To avoid steps 2, 3 and 4, flag SUPPORT_CUSTOM_FRAME_CONTROL can be enabled in
+*   config.h (it requires recompiling raylib). This way those steps are up to the user.
+*
+*   Note that enabling this flag invalidates some functions:
+*       - GetFrameTime()
+*       - SetTargetFPS()
+*       - GetFPS()
+*/
+
 void DrawSongPanel(Rectangle bounds)
 {
     //TODO: scrollbar when bounds.width < limit?
