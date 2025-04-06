@@ -14,6 +14,10 @@ public:
 
 	fluid_synth_t* synth() const	{ return _synth; }
 
+	void noteOn(int channel, int key, int velocity);
+
+	void noteOff(int channel, int key);
+
 private:
 	FluidSynth();
 

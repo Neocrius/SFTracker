@@ -27,4 +27,14 @@ FluidSynth::~FluidSynth()
 	delete_fluid_settings(_settings);
 }
 
+void FluidSynth::noteOn(int channel, int key, int velocity)
+{
+	fluid_synth_noteon(_synth, channel, key, velocity);
+}
+
+void FluidSynth::noteOff(int channel, int key)
+{
+	fluid_synth_noteoff(_synth, channel, key);
+}
+
 }	//namespace sft
