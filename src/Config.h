@@ -6,7 +6,7 @@ namespace sft
 class Config
 {
 public:
-	Config &singleton();
+	static Config &singleton();
 
 	std::string &searchPaths() const				{ return _searchPaths; }
 

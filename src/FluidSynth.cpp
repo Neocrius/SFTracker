@@ -5,7 +5,7 @@
 namespace sft
 {
 
-FluidSynth &FluidSynth::singleton()
+static FluidSynth &FluidSynth::singleton()
 {
 	static FluidSynth fs;
 	return fs;

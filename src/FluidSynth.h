@@ -10,7 +10,7 @@ namespace sft
 class FluidSynth
 {
 public:
-	FluidSynth &singleton();
+	static FluidSynth &singleton();
 
 	fluid_synth_t* synth() const	{ return _synth; }
 

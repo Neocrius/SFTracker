@@ -6,7 +6,7 @@ using namespace scl;
 namespace sft
 {
 
-Config &Config::singleton()
+static Config &Config::singleton()
 {
 	static Config cfg;
 	return cfg;
