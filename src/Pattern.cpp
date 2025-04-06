@@ -6,6 +6,8 @@ namespace sft
 
 void Pattern::serializeOut(std::ostream &os)
 {
+	READ_LOCK;
+
 	size_t size = _lines.size();
 	WRITE(size);
 
@@ -14,6 +16,8 @@ void Pattern::serializeOut(std::ostream &os)
 
 bool Pattern::serializeIn(std::istream &is)
 {
+	WRITE_LOCK;
+	
 	size_t size = 0;
 	READ(size);
 

@@ -3,6 +3,8 @@
 namespace sft
 {
 
+Module::P _current;
+
 Module::Module()
 {
 
@@ -33,6 +35,8 @@ static const uint32_t _fileVer	= 1;
 
 void Module::serializeOut(std::ostream &os)
 {
+	READ_LOCK;
+
 	WRITE(_magic);
 	WRITE(_fileVer);
 
@@ -68,8 +72,8 @@ void Module::serializeOut(std::ostream &os)
 	WRITE(size);
 	os.write(reinterpret_cast<const char*>&_order[0], sizeof(OrderItem) * size);
 
-	WRITE(_playPosition);
-	WRITE(_editPosition);
+	WRITE(_editingOrder);
+	WRITE(_editingLine);
 	WRITE(_editingTrack);
 	WRITE(_editingColumn);
 
@@ -81,6 +85,8 @@ void Module::serializeOut(std::ostream &os)
 
 bool Module::serializeIn(std::istream &is)
 {
+	WRITE_LOCK;
+
 	uint32_t magic = 0;
 	READ(magic);
 
@@ -145,8 +151,8 @@ bool Module::serializeIn(std::istream &is)
 	_order.resize(size);
 	is.read(reinterpret_cast<char*>&_order[0], sizeof(OrderItem) * size);
 
-	READ(_playPosition);
-	READ(_editPosition);
+	READ(_editingOrder);
+	READ(_editingLine);
 	READ(_editingTrack);
 	READ(_editingColumn);
 

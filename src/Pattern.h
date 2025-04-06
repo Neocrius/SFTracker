@@ -20,15 +20,15 @@ public:
 
 	//reading
 
-	char note(int track, int column, int line) const		{ return _lines[line].t[track].notes[column]; }
+	char note(int track, int column, int line) const		{ READ_LOCK; return _lines[line].t[track].notes[column]; }
 
-	char velocity(int track, int column, int line) const	{ return _lines[line].t[track].velocities[column]; }
+	char velocity(int track, int column, int line) const	{ READ_LOCK; return _lines[line].t[track].velocities[column]; }
 
-	char fx(int track, int column, int line) const			{ return _lines[line].t[track].fx[column]; }
+	char fx(int track, int column, int line) const			{ READ_LOCK; return _lines[line].t[track].fx[column]; }
 
-	char parameter(int track, int column, int line) const	{ return _lines[line].t[track].parameters[column]; }
+	char parameter(int track, int column, int line) const	{ READ_LOCK; return _lines[line].t[track].parameters[column]; }
 
-	int instrument(int track, int line) const				{ return _lines[line].t[track].instrument; }
+	int instrument(int track, int line) const				{ READ_LOCK; return _lines[line].t[track].instrument; }
 
 	//writing
 
@@ -55,7 +55,9 @@ private:
 		TrackLine 	t[TRACK_COUNT];
 	};
 
-	std::vector<Line> _lines;
+	std::vector<Line> 	_lines;
+
+	std::shared_mutex	_mutex;
 };
 
 }	//namespace sft
