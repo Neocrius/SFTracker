@@ -6,8 +6,8 @@ namespace sft
 #define NOTE_OFF			0
 #define FIRST_VALID_NOTE	21
 
-extern const char* g_noteNameSharp[127];
-extern const char* g_noteNameFlat[127];
-extern const char* g_noteNameDrums[127];
+extern const char* _noteNameSharp[128];
+extern const char* _noteNameFlat[128];
+extern const char* _noteNameDrums[128];
 
 }	//namespace sft

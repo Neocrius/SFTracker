@@ -36,7 +36,7 @@ public:
 
 	void setDrums(bool b)				{ _drums = b; }
 
-	void programSelect(int channel);
+	void programSelect(int channel) const;
 
 	//serialization
 	

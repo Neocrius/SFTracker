@@ -22,7 +22,7 @@ bool Pattern::serializeIn(std::istream &is)
 	READ(size);
 
 	_lines.resize(size);
-	is.read(reinterpret_cast<char*>&_lines[0], sizeof(Line) * size);
+	is.read(reinterpret_cast<char*>(&_lines[0]), sizeof(Line) * size);
 
 	return is.good();
 }

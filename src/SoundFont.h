@@ -25,6 +25,6 @@ public:
 private:
 	std::string _fileName;
 	int 		_id		= -1;
-}
+};
 
 }	//namespace sft

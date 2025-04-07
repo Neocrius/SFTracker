@@ -11,7 +11,7 @@ namespace sft
 class Scheduler
 {
 public:
-	Scheduler& singleton();
+	static Scheduler& singleton();
 
 	void start(struct timeval& startTime);
 

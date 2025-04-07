@@ -1,23 +1,21 @@
 #include "Instrument.h"
 #include "Module.h"
-#include "FluidSynth.h"
+#include "FluidSynthWrapper.h"
 #include "Misc.h"
-#include <fluidsynth/synth.h>
 
 namespace sft
 {
 
-void Instrument::programSelect(int channel)
+void Instrument::programSelect(int channel) const
 {
-	fluid_synth_program_select(
-		Synth::singleton()->fs(),
+	FluidSynth::singleton().programSelect(
 		channel,
 		Module::current()->soundFont(_sf).id(),
 		_bank,
 		_patch);
 }
 
-void serializeOut(std::ostream &os)
+void Instrument::serializeOut(std::ostream &os) const
 {
 	writeString(os, _name);
 
@@ -29,7 +27,7 @@ void serializeOut(std::ostream &os)
 	WRITE(_drums);
 }
 
-bool serializeIn(std::istream &is)
+bool Instrument::serializeIn(std::istream &is)
 {
 	if (!readString(is, &_name))
 		return false;

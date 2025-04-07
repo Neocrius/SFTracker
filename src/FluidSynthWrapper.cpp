@@ -1,11 +1,10 @@
-#include "FluidSynth.h"
-
-#include <fluidsynth/settings.h>
+#include "FluidSynthWrapper.h"
+#include <fluidsynth.h>
 
 namespace sft
 {
 
-static FluidSynth &FluidSynth::singleton()
+FluidSynth &FluidSynth::singleton()
 {
 	static FluidSynth fs;
 	return fs;
@@ -25,6 +24,21 @@ FluidSynth::~FluidSynth()
 	delete_fluid_audio_driver(_adriver);
 	delete_fluid_synth(_synth);
 	delete_fluid_settings(_settings);
+}
+
+int FluidSynth::sfload(const char* path, int resetPresets /* = 0 */)
+{
+	return fluid_synth_sfload(_synth, path, resetPresets);
+}
+
+void FluidSynth::sfunload(int id, int resetPresets /* = 0 */)
+{
+	fluid_synth_sfunload(_synth, id, resetPresets);
+}
+
+void FluidSynth::programSelect(int channel, int soundFont, int bank, int patch)
+{
+	fluid_synth_program_select(_synth, channel, soundFont, bank, patch);
 }
 
 void FluidSynth::noteOn(int channel, int key, int velocity)

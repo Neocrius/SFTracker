@@ -1,11 +1,13 @@
 #include "Player.h"
+#include "Scheduler.h"
+#include "FluidSynthWrapper.h"
 #include "Module.h"
 #include "NoteNames.h"
 
 namespace sft
 {
 
-static Player &Player::singleton()
+Player &Player::singleton()
 {
 	static Player p;
 	return p;
@@ -14,7 +16,12 @@ static Player &Player::singleton()
 Player::Player()
 {
 	memset(_lastInstrument, 0xFF, sizeof(_lastInstrument));
-	memset(_lastNote, 0xFF, sizeof(_lastNode));
+	memset(_lastNote, 0xFF, sizeof(_lastNote));
+}
+
+Player::~Player()
+{
+	//stop, join...
 }
 
 void Player::threadFn()
@@ -26,7 +33,7 @@ void Player::threadFn()
 
 	while (_run)
 	{
-		_mutex.shared_lock();
+		_mutex.lock_shared();
 
 		if (!tickOfLine)
 		{
@@ -34,9 +41,9 @@ void Player::threadFn()
 
 			for (int track = 0, trackBit = 1; track < TRACK_COUNT; ++track, trackBit <<= 1)
 			{
-				if (currentPos._trackMask & trackBit)
+				if (currentPos.trackMask & trackBit)
 				{
-					int inst 		= currentPos._pattern->instrument(track, currentPos._line);
+					int inst 		= currentPos.pattern->instrument(track, currentPos.line);
 					int defVelocity = _lastDefVelocity[track];
 					int noteColumns = 0;
 
@@ -48,8 +55,8 @@ void Player::threadFn()
 						{
 							if (inst >= 0)
 							{
-								Module::current()->instrument(inst)->programChange(track);
-								defVelocity = Module::current()->instrument(inst)->velocity();
+								Module::current()->instrument(inst).programSelect(track);
+								defVelocity = Module::current()->instrument(inst).velocity();
 							}
 
 							noteColumns = Module::current()->noteColumns(track);
@@ -72,34 +79,36 @@ void Player::threadFn()
 						if (nc < noteColumns)
 						{
 							//active note column--send note on
-							int velocity = currentPos._pattern->velocity(track, nc, currentPos._line);
+							int velocity = currentPos.pattern->velocity(track, nc, currentPos.line);
 							if (velocity < 0)
 							{
 								velocity = defVelocity;
 							}
-							int note = currentPos._pattern->note(track, nc, currentPos._line);
+							int note = currentPos.pattern->note(track, nc, currentPos.line);
 
 							if (note >= NOTE_OFF)
 							{
-								if (lastNote >= FIRST_VALID_NOTE && note != _lastNote[])
+								const int ln = track * MAX_NOTE_COLUMNS + nc;
+
+								if (lastNote >= FIRST_VALID_NOTE && note != _lastNote[ln])
 								{
-									Synth::singleton().noteOff(track, lastNote);								
+									FluidSynth::singleton().noteOff(track, lastNote);								
 								}
 
 								if (note >= FIRST_VALID_NOTE && velocity > 0)
 								{
-									Synth::singleton().noteOn(track, note, velocity);
-									_lastNote[track * MAX_NOTE_COLUMNS + nc] = note;
+									FluidSynth::singleton().noteOn(track, note, velocity);
+									_lastNote[ln] = note;
 								}
 								else
 								{
-									_lastNote[track * MAX_NOTE_COLUMNS + nc] = -1;
+									_lastNote[ln] = -1;
 								}
 							}
 						}
 						else if (lastNote >= FIRST_VALID_NOTE)
 						{
-							Synth::singleton().noteOff(track, lastNote);								
+							FluidSynth::singleton().noteOff(track, lastNote);								
 						}
 					}
 				}
@@ -115,7 +124,7 @@ void Player::threadFn()
 			}
 		}
 
-		_mutex.shared_unlock();
+		_mutex.unlock_shared();
 
 		Scheduler::singleton().waitForTick(Module::current()->tickRate());
 
@@ -140,21 +149,21 @@ Player::Position Player::advancePosition()
 
 	if (_nextPos.pattern->length() <= _nextPos.line)
 	{
-		_next.line = 0;
+		_nextPos.line = 0;
 
 		if (!_loop)
 		{
 			++_nextPos.order;
 
-			if (module->orderLength() <= _next.order)
+			if (module->orderLength() <= _nextPos.order)
 			{
 				_nextPos.order = 0;
 			}
 		}
 	}
 
-	_nextPos._pattern 	= module->orderPattern(_nextPos.order);
-	_nextPos._trackMask = module->trackMask(_nextPos.order);
+	_nextPos.pattern 	= module->orderPattern(_nextPos.order);
+	_nextPos.trackMask = module->trackMask(_nextPos.order);
 
 	module->readUnlock();
 

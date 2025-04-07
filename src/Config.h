@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace sft
 {
 
@@ -8,7 +10,7 @@ class Config
 public:
 	static Config &singleton();
 
-	std::string &searchPaths() const				{ return _searchPaths; }
+	const std::string &searchPaths() const			{ return _searchPaths; }
 
 	void setSearchPaths(const std::string &paths)	{ _searchPaths = paths; }
 
@@ -19,6 +21,6 @@ private:
 	~Config();
 
 	std::string _searchPaths;
-}
+};
 
 }	//namespace sft

@@ -16,7 +16,7 @@ public:
 
 	typedef std::shared_ptr<Module> P;
 
-	static P current() const;
+	static P current();
 
 	static void setCurrent(P module);
 
@@ -51,7 +51,7 @@ public:
 
 	void addSoundFont(const SoundFont &s)			{ WRITE_LOCK; _soundFonts.push_back(s); }
 
-	bool removeUnusedSoundFonts();					//returns true if removed
+	int removeUnusedSoundFonts();					//returns number of unused SoundFonts
 
 	//instruments
 
@@ -69,8 +69,6 @@ public:
 
 	int velocityScale(int track)					{ READ_LOCK; return _tracks[track].velocityScale; }
 
-	bool isDrums(int track)							{ READ_LOCK; return _tracks[track].drums; }
-
 	void setTrackName(int track,
 					  const std::string &name)		{ WRITE_LOCK; _tracks[track].name = name; }
 
@@ -83,14 +81,11 @@ public:
 	void setVelocityScale(int track,
 						  int scale)				{ WRITE_LOCK; _tracks[track].velocityScale = scale; }
 
-	void setDrums(int track,
-				  bool drums)						{ WRITE_LOCK; _tracks[track].drums = drums; }
-
 	//patterns
 
 	int patterns() const							{ READ_LOCK; return _patterns.size(); }
 
-	Pattern::P pattern(int index) const				{ READ_LOCK; return _patterns[i]; }
+	Pattern::P pattern(int index) const				{ READ_LOCK; return _patterns[index]; }
 
 	int addPattern();								//returns the new pattern number
 
@@ -127,7 +122,7 @@ public:
 
 	void setEditingOrder();
 
-	int editingLine() const							{ READ_LOCK; return _editPosition; }
+	int editingLine() const							{ READ_LOCK; return _editingLine; }
 
 	void setEditingLine(int pos,
 						bool stayInPattern);
@@ -144,9 +139,9 @@ public:
 
 	//mutex
 
-	void readLock()									{ _mutex.shared_lock(); }
+	void readLock()									{ _mutex.lock_shared(); }
 
-	void readUnlock()								{ _mutex.shared_unlock(); }
+	void readUnlock()								{ _mutex.unlock_shared(); }
 
 	//serialization
 
@@ -155,21 +150,21 @@ public:
 	bool serializeIn(std::istream &is);
 
 private:
-	static P 				_current;
+	static P 					_current;
 
-	std::vector<SoundFont>	_soundFonts;
-	std::vector<Instrument>	_instruments;
-	std::vector<Pattern::P>	_patterns;
+	std::vector<SoundFont>		_soundFonts;
+	std::vector<Instrument>		_instruments;
+	std::vector<Pattern::P>		_patterns;
 
 	struct Track
 	{
 		std::string	name;
-		int noteColumns;	//1..MAX_NOTE_COLUMNS
-		int fxColumns;		//1..MAX_FX_COLUMNS
-		int velocityScale;
+		int 		noteColumns;	//1..MAX_NOTE_COLUMNS
+		int 		fxColumns;		//1..MAX_FX_COLUMNS
+		int 		velocityScale;
 	};
 
-	Track 					_tracks[TRACK_COUNT];
+	Track 						_tracks[TRACK_COUNT];
 
 	struct OrderItem
 	{
@@ -177,17 +172,19 @@ private:
 		int trackMask;
 	};
 
-	std::vector<OrderItem>	_order;
+	std::vector<OrderItem>		_order;
 
-	int 					_editingOrder;
-	int						_editingLine	= 0;
-	int						_editingTrack	= 0;
-	int						_editingColumn	= 0;
+	int 						_editingOrder;
+	int							_editingLine	= 0;
+	int							_editingTrack	= 0;
+	int							_editingColumn	= 0;
 
-	int						_bpm			= 120;
-	int						_lpb			= 4;
-	int						_tpl			= 6;
-	bool 					_useFlats 		= false;
+	int							_bpm			= 120;
+	int							_lpb			= 4;
+	int							_tpl			= 6;
+	bool 						_useFlats 		= false;
+
+	mutable std::shared_mutex	_mutex;
 };
 
 }	//namespace sft

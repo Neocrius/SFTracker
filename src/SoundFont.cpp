@@ -1,16 +1,16 @@
 #include "SoundFont.h"
-#include "FluidSynth.h"
+#include "FluidSynthWrapper.h"
 #include "Misc.h"
-#include <synth.h>
+#include "Config.h"
 
 namespace sft
 {
 
 bool SoundFont::load(std::string &fileName)
 {
-	_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), normalizePath(fileName).c_str(), 0);
+	_id = FluidSynth::singleton().sfload(normalizePath(fileName).c_str());
 
-	if (_sf < 0)
+	if (_id < 0)
 	{
 		std::string fileName 			= fileNameFromPath(fileName);
 		std::vector<std::string> paths 	= split(Config::singleton().searchPaths(), ";");
@@ -19,9 +19,9 @@ bool SoundFont::load(std::string &fileName)
 		{
 			std::string tryFileName = normalizePath(path, true) + fileName;
 
-			_sf = fluid_synth_sfload(FluidSynth::singleton().synth(), tryFileName.c_str(), 0);
+			_id = FluidSynth::singleton().sfload(tryFileName.c_str());
 
-			if (_sf >= 0)
+			if (_id >= 0)
 			{
 				_fileName = tryFileName;
 				return true;
@@ -40,10 +40,10 @@ bool SoundFont::load(std::string &fileName)
 
 SoundFont::~SoundFont()
 {
-	if (_sf >= 0)
+	if (_id >= 0)
 	{
-		fluid_synth_sfunload(FluidSynth::singleton().synth(), _sf);
-		_sf = -1;
+		FluidSynth::singleton().sfunload(_id);
+		_id = -1;
 	}
 }
 

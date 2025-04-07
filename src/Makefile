@@ -2,7 +2,7 @@
 
 RAYLIB_PATH        ?= ../deps/raylib
 RAYGUI_PATH        ?= ../deps/raygui
-FLUIDSYNTH_PATH    ?= ../deps/fluidsynth/build
+FLUIDSYNTH_PATH    ?= ../deps/fluidsynth
 SCL_PATH           ?= ../deps/scl/include/SCL
 
 export PLATFORM    ?= PLATFORM_DESKTOP
@@ -68,7 +68,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 
-CPPFLAGS += -O1 -s -Wall -std=c++14
+CPPFLAGS += -O1 -s -Wall -std=c++17
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),WINDOWS)
@@ -76,7 +76,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     endif
 endif
 
-INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYGUI_PATH)/src -I$(SCL_PATH)
+INCLUDE_PATHS = -I. -I$(RAYLIB_PATH)/src -I$(RAYGUI_PATH)/src -I$(SCL_PATH) -I$(FLUIDSYNTH_PATH)/include -I$(FLUIDSYNTH_PATH)/build/include
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
     ifeq ($(PLATFORM_OS),BSD)
@@ -85,12 +85,12 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
 endif
 
 # Define library paths containing required libs.
-LDFLAGS = -std=c++14 -L. -L$(RAYLIB_PATH)/src
+LDFLAGS = -std=c++17 -L. -L$(RAYLIB_PATH)/src
 
 ifeq ($(PLATFORM_OS),OSX)
-    LDFLAGS += -F$(FLUIDSYNTH_PATH)/src -rpath $(FLUIDSYNTH_PATH)/src
+    LDFLAGS += -F$(FLUIDSYNTH_PATH)/build/src -rpath $(FLUIDSYNTH_PATH)/build/src
 else
-    LDFLAGS += -L$(FLUIDSYNTH_PATH)/src
+    LDFLAGS += -L$(FLUIDSYNTH_PATH)/build/src
 endif
 
 ifeq ($(PLATFORM),PLATFORM_DESKTOP)
@@ -161,7 +161,7 @@ ifeq ($(PLATFORM),PLATFORM_RPI)
 endif
 
 
-SRCS=Main.cpp Scheduler.cpp
+SRCS=Config.cpp FluidSynthWrapper.cpp Instrument.cpp Main.cpp Misc.cpp Module.cpp NoteNames.cpp Pattern.cpp Player.cpp Scheduler.cpp SoundFont.cpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 
 all: sftracker

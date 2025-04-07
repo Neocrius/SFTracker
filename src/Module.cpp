@@ -3,7 +3,7 @@
 namespace sft
 {
 
-Module::P _current;
+Module::P Module::_current;
 
 Module::Module()
 {
@@ -15,29 +15,29 @@ Module::~Module()
 
 }
 
-static Module::P Module::current()
+Module::P Module::current()
 {
 	if (_current)
 	{
-		const std::shared_lock<std::shared_mutex> lock(_current._mutex);
+		const std::shared_lock<std::shared_mutex> lock(_current->_mutex);
 		return _current;
 	}
 
 	return {};
 }
 
-static void Module::setCurrent(Module::P module)
+void Module::setCurrent(Module::P module)
 {
 	if (_current)
 	{
-		const std::unique_lock<std::shared_mutex> lock(_current._mutex);
+		const std::unique_lock<std::shared_mutex> lock(_current->_mutex);
 		_current = module;
 	}
 }
 
-void Module::removeUnusedSoundFonts()
+int Module::removeUnusedSoundFonts()
 {
-
+	return 0;
 }
 
 void Module::orderInsertBefore()
@@ -86,11 +86,11 @@ void Module::serializeOut(std::ostream &os)
 
 	size = TRACK_COUNT;
 	WRITE(size);
-	os.write(reinterpret_cast<const char*>_tracks, sizeof(Track) * TRACK_COUNT);
+	os.write(reinterpret_cast<const char*>(_tracks), sizeof(Track) * TRACK_COUNT);
 
 	size = _order.size();
 	WRITE(size);
-	os.write(reinterpret_cast<const char*>&_order[0], sizeof(OrderItem) * size);
+	os.write(reinterpret_cast<const char*>(&_order[0]), sizeof(OrderItem) * size);
 
 	WRITE(_editingOrder);
 	WRITE(_editingLine);
@@ -165,11 +165,11 @@ bool Module::serializeIn(std::istream &is)
 	{
 		return false;
 	}
-	os.read(reinterpret_cast<char*>_tracks, sizeof(Track) * 16);
+	is.read(reinterpret_cast<char*>(_tracks), sizeof(Track) * 16);
 
 	READ(size);
 	_order.resize(size);
-	is.read(reinterpret_cast<char*>&_order[0], sizeof(OrderItem) * size);
+	is.read(reinterpret_cast<char*>(&_order[0]), sizeof(OrderItem) * size);
 
 	READ(_editingOrder);
 	READ(_editingLine);

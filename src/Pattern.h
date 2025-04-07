@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include "Misc.h"
 
 #define TRACK_COUNT			16
 #define MAX_NOTE_COLUMNS	16
@@ -55,9 +55,9 @@ private:
 		TrackLine 	t[TRACK_COUNT];
 	};
 
-	std::vector<Line> 	_lines;
+	std::vector<Line> 			_lines;
 
-	std::shared_mutex	_mutex;
+	mutable std::shared_mutex	_mutex;
 };
 
 }	//namespace sft

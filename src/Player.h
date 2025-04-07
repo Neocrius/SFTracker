@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Pattern.h"
+#include <thread>
+#include <sys/time.h>
+
 namespace sft
 {
 
@@ -9,32 +13,34 @@ public:
 	static Player &singleton();
 
 private:
+	Player();
+	
 	~Player();
 
 	void threadFn();
 
-	Position advancePosition();
-
 	std::thread 		_thread;
 	std::shared_mutex	_mutex;
 
-	struct timevalue_t 	_startTime;
+	struct timeval 		_startTime;
 	volatile bool		_run;
 	bool				_loop;
 
 	struct Position
 	{
-		int 			_order;
-		int 			_line;
-		Pattern:P 		_pattern;
-		int				_trackMask;
+		int 			order;
+		int 			line;
+		Pattern::P 		pattern;
+		int				trackMask;
 	};
 
 	Position			_nextPos;
 
+	Position advancePosition();
+
 	int					_lastInstrument[TRACK_COUNT];
 	int					_lastDefVelocity[TRACK_COUNT];
-	int					_lastNote[TRACK_COUNT * MAX_NOTE_COLUMNS]
-}
+	int					_lastNote[TRACK_COUNT * MAX_NOTE_COLUMNS];
+};
 
 }	//namespace sft

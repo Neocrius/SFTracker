@@ -3,7 +3,7 @@
 namespace sft
 {
 
-const char* g_noteNameSharp[127] =
+const char* _noteNameSharp[128] =
 {
 	"OFF",	//0
 	"OFF",
@@ -145,7 +145,7 @@ const char* g_noteNameSharp[127] =
 	"G-9",
 };
 
-const char* g_noteNameFlat[127] =
+const char* _noteNameFlat[128] =
 {
 	"OFF",	//0
 	"OFF",
@@ -287,7 +287,7 @@ const char* g_noteNameFlat[127] =
 	"G-9",
 };
 
-const char* g_noteNameDrums[127] =
+const char* _noteNameDrums[128] =
 {
 	"OFF",	//0
 	"OFF",

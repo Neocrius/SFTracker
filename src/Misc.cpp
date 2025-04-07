@@ -6,21 +6,21 @@ namespace sft
 void writeString(std::ostream &os, const std::string &str)
 {
 	size_t size = str.size();
-	os.write(reinterpret_cast<const char*>&size, sizeof(size));
-	os.write(reinterpret_cast<const char*>&str[0], size);
+	os.write(reinterpret_cast<const char*>(&size), sizeof(size));
+	os.write(reinterpret_cast<const char*>(&str[0]), size);
 }
 
 bool readString(std::istream &is, OUT std::string *str)
 {
 	size_t size = 0;
-	is.read(reinterpret_cast<char*>&size, sizeof(size));
+	is.read(reinterpret_cast<char*>(&size), sizeof(size));
 	str->resize(size);
-	is.read(reinterpret_cast<char*>&(*str)[0], size);
+	is.read(reinterpret_cast<char*>(&(*str)[0]), size);
 
 	return is.good();
 }
 
-std::vector<std::string> split(const std::string &s, const std::string &delimiter)
+std::vector<std::string> split(std::string s, const std::string &delimiter)
 {
     std::vector<std::string> tokens;
     size_t pos = 0;
@@ -36,7 +36,7 @@ std::vector<std::string> split(const std::string &s, const std::string &delimite
     return tokens;
 }
 
-std::string normalizePath(const std::string &s, bool appendSlash = false)
+std::string normalizePath(const std::string &s, bool appendSlash /* = false */)
 {
 	std::string res;
 
@@ -48,17 +48,17 @@ std::string normalizePath(const std::string &s, bool appendSlash = false)
 		}
 		else if (s[i] == '\\')
 		{
-			res.append('/');
+			res.append('/', 1);
 		}
 		else
 		{
-			res.append(s[i]);
+			res.append(s[i], 1);
 		}
 	}
 
 	if (appendSlash && res[res.length() - 1] != '/')
 	{
-		res.append('/');
+		res.append("/", 1);
 	}
 
 	return res;
@@ -66,7 +66,7 @@ std::string normalizePath(const std::string &s, bool appendSlash = false)
 
 std::string fileNameFromPath(const std::string &s)
 {
-	int slash = rfind(s, '/');
+	int slash = s.rfind("/");
 
 	if (slash >= 0)
 	{

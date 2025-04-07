@@ -1,12 +1,12 @@
 #include "Config.h"
-#include <SCL.h>
+#include <SCL.hpp>
 
 using namespace scl;
 
 namespace sft
 {
 
-static Config &Config::singleton()
+Config &Config::singleton()
 {
 	static Config cfg;
 	return cfg;
