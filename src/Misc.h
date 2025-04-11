@@ -12,7 +12,7 @@ namespace sft
 #define WRITE(var)	os.write(reinterpret_cast<const char*>(&var), sizeof(var))
 #define READ(var)	is.read(reinterpret_cast<char*>(&var), sizeof(var))
 
-//C++14
+//C++17
 #define WRITE_LOCK	const std::unique_lock<std::shared_mutex> lock(_mutex)
 #define READ_LOCK	const std::shared_lock<std::shared_mutex> lock(_mutex)
 

@@ -14,6 +14,8 @@ class Pattern
 public:
 	typedef std::shared_ptr<Pattern> P;
 	
+	Pattern(int length = 64)								{ _lines.resize(length); }
+
 	int length() const	{ return _lines.size(); }
 
 	void setLength();

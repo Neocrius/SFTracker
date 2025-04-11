@@ -7,7 +7,18 @@ Module::P Module::_current;
 
 Module::Module()
 {
+	_patterns.push_back(std::make_shared<Pattern>());
+	_order.push_back((OrderItem){0, 65535});
 
+	for (int track = 0; track < 16; ++track)
+	{
+		_tracks[track].noteColumns 		= 1;
+		_tracks[track].fxColumns 		= 1;
+		_tracks[track].volume 			= 100;
+		_tracks[track].pan				= 0;
+		_tracks[track].chorus			= 0;
+		_tracks[track].reverb			= 0;
+	}
 }
 
 Module::~Module()
@@ -17,13 +28,13 @@ Module::~Module()
 
 Module::P Module::current()
 {
-	if (_current)
+	if (!_current)
 	{
-		const std::shared_lock<std::shared_mutex> lock(_current->_mutex);
-		return _current;
+		_current = std::make_shared<Module>();
 	}
 
-	return {};
+	const std::shared_lock<std::shared_mutex> lock(_current->_mutex);
+	return _current;
 }
 
 void Module::setCurrent(Module::P module)
@@ -48,6 +59,13 @@ void Module::orderInsertBefore()
 void Module::orderInsertAfter()
 {
 	
+}
+
+void Module::setEditingLine(int line, bool stayInPattern)
+{
+	WRITE_LOCK;
+
+	_editingLine = line;
 }
 
 static const uint32_t _magic 	= 'SFTM';

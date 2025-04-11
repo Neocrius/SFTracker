@@ -1,3 +1,5 @@
+#include "Module.h"
+
 #include "raylib.h"
 
 #define RAYGUI_IMPLEMENTATION
@@ -183,6 +185,134 @@ void DrawTabbedArea(Rectangle bounds, int tabButtons, const int* tabIcons, int* 
     }
 }
 
+#define WIDE_CHAR       12
+#define NARROW_CHAR     8
+#define COLUMN_SPACING  1
+#define LINE_HEIGHT     16
+
+void DrawPattern(Rectangle bounds)
+{
+    int noteColumns[16], fxColumns[16];
+
+    int totalWidth = NARROW_CHAR * 3 + COLUMN_SPACING * 2 + RAYGUI_PANEL_BORDER_WIDTH;
+
+    sft::Module::P module = sft::Module::current();
+    
+    for (int track = 0; track < 16; ++track)
+    {
+        noteColumns[track]  = module->noteColumns(track);
+        fxColumns[track]    = module->fxColumns(track);
+
+        totalWidth += (WIDE_CHAR * 3 + NARROW_CHAR * 2 + COLUMN_SPACING * 2) * noteColumns[track] + COLUMN_SPACING;
+        
+        if (fxColumns[track])
+        {
+            totalWidth += (NARROW_CHAR * 4 + COLUMN_SPACING) * fxColumns[track];
+        }
+    }
+
+    int order       = module->editingOrder();
+    int line        = module->editingLine();
+    int track       = module->editingTrack();
+    int column      = module->editingColumn();
+    int trackMask   = module->trackMask(order);
+    
+    sft::Pattern::P pattern = module->orderPattern(order);
+
+    Rectangle content = (Rectangle){0, 0, float(totalWidth), bounds.height + pattern->length() * 8}, view;
+    static Vector2 scroll;
+
+    GuiScrollPanel(bounds, nullptr, content, &scroll, &view);
+
+    if (-scroll.y / 8 != line)
+    {
+        line = std::min(pattern->length() - 1, int(-scroll.y / 8));
+        module->setEditingLine(line, true);
+    }
+
+    //scissor
+    int visibleHeight = int(bounds.height);
+
+    int originY = int(bounds.y + bounds.height / 2) - line * LINE_HEIGHT + RAYGUI_PANEL_BORDER_WIDTH;
+
+    for (int drawLine = 0; drawLine < pattern->length(); ++drawLine)
+    {
+        if (originY < bounds.y + bounds.height && originY + 16 > bounds.y)
+        {
+            int originX = int(bounds.x + scroll.x) + RAYGUI_PANEL_BORDER_WIDTH + COLUMN_SPACING;
+
+            //line #
+            for (int c = 0; c < 3; ++c)
+            {
+                GuiDrawRectangle(
+                    (Rectangle){float(originX), float(originY), NARROW_CHAR - 1, LINE_HEIGHT - 1},
+                    0,  //border width
+                    GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+                    GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)));
+
+                originX += NARROW_CHAR;
+            }
+
+            originX += COLUMN_SPACING;
+
+            for (int track = 0; track < 16; ++track)
+            {
+                //notes
+
+                for (int nc = 0; nc < noteColumns[track]; ++nc)
+                {
+                    //note
+
+                    for (int c = 0; c < 3; ++c)
+                    {
+                        GuiDrawRectangle(
+                            (Rectangle){float(originX), float(originY), WIDE_CHAR - 1, LINE_HEIGHT - 1},
+                            0,  //border width
+                            GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+                            GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)));
+
+                        originX += WIDE_CHAR;
+                    }
+
+                    //velocity
+
+                    for (int c = 0; c < 2; ++c)
+                    {
+                        GuiDrawRectangle(
+                            (Rectangle){float(originX), float(originY), NARROW_CHAR - 1, LINE_HEIGHT - 1},
+                            0,  //border width
+                            GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+                            GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)));
+
+                        originX += NARROW_CHAR;
+                    }
+
+                    originX += COLUMN_SPACING;
+
+                    //instrument
+
+                    for (int c = 0; c < 2; ++c)
+                    {
+                        GuiDrawRectangle(
+                            (Rectangle){float(originX), float(originY), NARROW_CHAR - 1, LINE_HEIGHT - 1},
+                            0,  //border width
+                            GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)),
+                            GetColor(GuiGetStyle(DEFAULT, (int)LINE_COLOR)));
+
+                        originX += NARROW_CHAR;
+                    }
+
+                    originX += COLUMN_SPACING;
+                }
+
+                //fx
+            }
+        }
+        
+        originY += LINE_HEIGHT;
+    }
+}
+
 int main()
 {
     int screenWidth = 1280;
@@ -225,6 +355,8 @@ int main()
 
             int editingStep = 1;
             GuiSpinner((Rectangle){8 + 48 + 80 + 48 + 80 + 40, editorBounds.y + 8, 80, 24}, "Step ", &editingStep, 1, 256, false);
+
+            DrawPattern((Rectangle){16, editorBounds.y + 48, editorBounds.width - 16, editorBounds.height - 56});
 
             //Top Panel
 

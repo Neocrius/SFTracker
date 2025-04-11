@@ -67,7 +67,13 @@ public:
 
 	int fxColumns(int track)						{ READ_LOCK; return _tracks[track].fxColumns; }
 
-	int velocityScale(int track)					{ READ_LOCK; return _tracks[track].velocityScale; }
+	int volume(int track)							{ READ_LOCK; return _tracks[track].volume; }
+
+	int pan(int track)								{ READ_LOCK; return _tracks[track].pan; }
+
+	int chorus(int track)							{ READ_LOCK; return _tracks[track].chorus; }
+
+	int reverb(int track)							{ READ_LOCK; return _tracks[track].reverb; }
 
 	void setTrackName(int track,
 					  const std::string &name)		{ WRITE_LOCK; _tracks[track].name = name; }
@@ -78,8 +84,17 @@ public:
 	void setFxColumns(int track,
 					  int columns)					{ WRITE_LOCK; _tracks[track].fxColumns = columns; }
 
-	void setVelocityScale(int track,
-						  int scale)				{ WRITE_LOCK; _tracks[track].velocityScale = scale; }
+	void setVolume(int track,
+				   int volume)						{ WRITE_LOCK; _tracks[track].volume = volume; }
+
+	void setPan(int track,
+				int pan)							{ WRITE_LOCK; _tracks[track].pan = pan; }
+
+	void setChorus(int track,
+				   int chorus)						{ WRITE_LOCK; _tracks[track].chorus = chorus; }
+
+	void setReverb(int track,
+				   int reverb)						{ WRITE_LOCK; _tracks[track].reverb = reverb; }
 
 	//patterns
 
@@ -143,6 +158,10 @@ public:
 
 	void readUnlock()								{ _mutex.unlock_shared(); }
 
+	void writeLock()								{ _mutex.lock(); }
+
+	void writeUnlock()								{ _mutex.unlock(); }
+
 	//serialization
 
 	void serializeOut(std::ostream &os);
@@ -161,7 +180,10 @@ private:
 		std::string	name;
 		int 		noteColumns;	//1..MAX_NOTE_COLUMNS
 		int 		fxColumns;		//1..MAX_FX_COLUMNS
-		int 		velocityScale;
+		int 		volume;
+		int			pan;
+		int			chorus;
+		int			reverb;
 	};
 
 	Track 						_tracks[TRACK_COUNT];
@@ -174,7 +196,7 @@ private:
 
 	std::vector<OrderItem>		_order;
 
-	int 						_editingOrder;
+	int 						_editingOrder	= 0;
 	int							_editingLine	= 0;
 	int							_editingTrack	= 0;
 	int							_editingColumn	= 0;

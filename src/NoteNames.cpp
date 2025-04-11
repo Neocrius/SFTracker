@@ -429,4 +429,39 @@ const char* _noteNameDrums[128] =
 	"-X-",
 };
 
+const char* _fxNames[32] =
+{
+	"AT",	//aftertouch / channel pressure
+	"BC",	//breath controller				MIDI CC 002
+	"BL",	//balance						MIDI CC 008
+	"BM",	//set beats [per] minute
+	"CH",	//chorus send					MIDI CC 093
+	"DL",	//delay note by ticks
+	"EP",	//end pattern
+	"EX",	//expression					MIDI CC 011
+	"GL",	//go to to line
+	"GO",	//go to order
+	"IV",	//instrument velocity
+	"LB",	//set lines [per] beat
+	"LS",	//legato switch					MIDI CC 068
+	"MM",	//mono mode						MIDI CC 126
+	"MW",	//mod wheel						MIDI CC 001
+	"NO",	//all notes off
+	"OF",	//all sound off
+	"PB",	//pitch bend
+	"PC",	//portamento time control		MIDI CC 084
+	"PM",	//poly mode						MIDI CC 127
+	"PN",	//pan							MIDI CC 010
+	"PO",	//portamento switch				MIDI CC 065
+	"PS",	//pitch wheel sens (semitones)
+	"PT",	//portamento time				MIDI CC 005
+	"RC",	//reset controllers				MIDI CC 121
+	"RE",	//reverb send					MIDI CC 091
+	"RT",	//retrigger last note/key
+	"SO",	//sostenuto pedal				MIDI CC 066
+	"SU",	//sustain pedal					MIDI CC 064
+	"TL",	//ticks per line
+	"TV",	//track volume					MIDI CC 007
+};
+
 }	//namespace sft

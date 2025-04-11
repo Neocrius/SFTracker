@@ -10,4 +10,6 @@ extern const char* _noteNameSharp[128];
 extern const char* _noteNameFlat[128];
 extern const char* _noteNameDrums[128];
 
+extern const char* _fxNames[32];
+
 }	//namespace sft
